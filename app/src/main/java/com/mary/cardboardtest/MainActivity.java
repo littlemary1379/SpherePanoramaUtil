@@ -1,56 +1,45 @@
 package com.mary.cardboardtest;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.res.AssetManager;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Pair;
-import android.widget.ImageView;
 
-import com.google.vr.sdk.base.Eye;
-import com.google.vr.sdk.base.GvrActivity;
-import com.google.vr.sdk.base.GvrView;
-import com.google.vr.sdk.base.HeadTransform;
-import com.google.vr.sdk.base.Viewport;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.vr.sdk.widgets.pano.VrPanoramaView;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.microedition.khronos.egl.EGLConfig;
-
 public class MainActivity extends AppCompatActivity {
 
     private VrPanoramaView view;
+    private static Handler handler = new Handler(Looper.getMainLooper());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_main);
         super.onCreate(savedInstanceState);
 
-
         findView();
         what();
 
     }
 
-    private void findView(){
+    private void findView() {
         view = findViewById(R.id.vrPanoramaView);
     }
 
     private void what() {
-        ImageLoaderTask imageLoaderTask = new ImageLoaderTask();
-        imageLoaderTask.execute(Pair.create(getIntent().getData(), new VrPanoramaView.Options()));
+        showSpherePanorama(Pair.create(getIntent().getData(), new VrPanoramaView.Options()));
     }
 
-    class ImageLoaderTask extends AsyncTask<Pair<Uri, VrPanoramaView.Options>,Void, Boolean> {
-
-        @Override
-        protected Boolean doInBackground(Pair<Uri, VrPanoramaView.Options>... pairs) {
-
+    private void showSpherePanorama(Pair<Uri, VrPanoramaView.Options> pair) {
+        handler.postDelayed(() -> {
             InputStream is = null;
 
             AssetManager assetManager = getAssets();
@@ -63,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
-                if(is != null) {
+                if (is != null) {
                     try {
                         is.close();
                     } catch (IOException e) {
@@ -72,8 +61,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            return null;
-        }
+        }, 0);
     }
 
 }
